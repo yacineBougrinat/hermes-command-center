@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Center</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --line:#232833; --txt:#e6e8ee; --mut:#8b93a7;
+    --blue:#4f8cff; --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.5; padding:20px; max-width:860px; margin:0 auto;}
+  header{display:flex; align-items:baseline; gap:16px; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:18px;}
+  h1{font-size:20px; font-weight:600;}
+  .meta{color:var(--mut); font-size:12px; margin-left:auto;}
+  nav{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  nav button{background:transparent; color:var(--mut); border:1px solid var(--line); padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer;}
+  nav button.active{color:#fff; background:var(--blue); border-color:var(--blue);}
+  .view{display:none;}
+  .view.on{display:block;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-bottom:18px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px;}
+  .card h3{font-size:14px; color:var(--mut); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px;}
+  .card .big{font-size:26px; font-weight:700;}
+  .g{color:var(--green);} .a{color:var(--amber);} .r{color:var(--red);} .b{color:var(--blue);}
+  .bar{background:#1d232e; border-radius:6px; height:8px; overflow:hidden; margin-top:8px;}
+  .bar>div{height:100%; background:var(--green);}
+  h2.sec{font-size:14px; color:var(--mut); text-transform:uppercase; letter-spacing:.5px; margin:20px 0 8px;}
+  .item{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:8px;}
+  .item .t{font-size:14px; cursor:pointer;}
+  .item .d{display:none; margin-top:8px; font-size:13px; color:var(--mut); border-top:1px solid var(--line); padding-top:8px; white-space:pre-wrap;}
+  .item.open .d{display:block;}
+  .dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--mut); margin-right:8px;}
+  .dot.top{background:var(--amber);}
+  .empty{color:var(--mut); font-size:13px; padding:10px 0;}
+  .faded{color:var(--mut);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Command Center</h1>
+  <span class="meta" id="built"></span>
+</header>
+<nav>
+  <button data-view="focus" class="active">Focus</button>
+  <button data-view="tasks">Tasks</button>
+  <button data-view="ideas">Ideas</button>
+  <button data-view="errands">Errands</button>
+</nav>
+
+<!-- FOCUS: only what matters right now -->
+<div id="view-focus" class="view on">
+  <div class="cards" id="focus-cards"></div>
+  <h2 class="sec">Open priorities</h2>
+  <div id="focus-tasks"></div>
+</div>
+
+<!-- TASKS: all sections, collapsible -->
+<div id="view-tasks" class="view">
+  <div id="tasks-root"></div>
+</div>
+
+<!-- IDEAS -->
+<div id="view-ideas" class="view">
+  <div id="ideas-root"></div>
+</div>
+
+<!-- ERRANDS -->
+<div id="view-errands" class="view">
+  <div id="errands-root"></div>
+</div>
+
+<script type="application/json" id="DATA">{"built_at": "2026-08-11 22:43", "focus": {"tasks": [{"Recurring Mastery Practice \u2014 Skill-Building (HIGHEST priority)": []}, {"Hermes Agent = The Main Goals & Task Organizer (no more Keep)": []}, {"Bookmarks Management System": []}, {"Cross-Platform LLM Chat Archive": []}, {"Personal Life OS \u2014 Centralized Life Management": []}, {"Obsidian Life OS \u2014 Review new two-mode system": []}, {"Reponsai AI Avatar Video Pipeline \u2014 Digital Brand": []}, {"Swing-Trade Level Watch \u2014 long-only alerts": []}, {"Robotics Mastery \u2014 Custom Curated Learning Portal (end-to-end)": []}, {"Cursor subscription \u2014 use before it expires (~Oct 2026)": []}, {"Tailscale + tmux \u2014 remote agent access": []}, {"Cheap Home Remote Robot (open-source)": []}, {"DJI Mini \u2014 Remote Control over Internet": []}], "top": ["Hermes Agent = The Main Goals & Task Organizer (no more Keep)", "Bookmarks Management System", "Cross-Platform LLM Chat Archive", "Personal Life OS \u2014 Centralized Life Management"]}, "projects": {"ROBOWALK": {"status": "pre-launch / cash-before", "deposits": {"threshold": 4500, "cumulative": 0, "buy_ready": "false"}, "leads_won": 0, "leads_active": 0}}, "all_tasks": {"\ud83e\udd16 Agent Suggestions": [{"title": "Research Radar", "body": []}, {"title": "Notion \u2192 GitHub Idea Pipeline", "body": []}, {"title": "Learning Curriculum Engine", "body": []}, {"title": "Desktop Computer-Use Agent", "body": []}, {"title": "Daily Standup Prep", "body": []}, {"title": "LabReach Affiliate / Referral Program", "body": []}, {"title": "Content Distribution Loop \u2014 X + Write-Once-Post-Everywhere", "body": []}, {"title": "Monixio Launch Sprint", "body": []}], "\ud83d\udccb Active Tasks": [{"title": "Recurring Mastery Practice \u2014 Skill-Building (HIGHEST priority)", "body": []}, {"title": "Hermes Agent = The Main Goals & Task Organizer (no more Keep)", "body": []}, {"title": "Bookmarks Management System", "body": []}, {"title": "Cross-Platform LLM Chat Archive", "body": []}, {"title": "Personal Life OS \u2014 Centralized Life Management", "body": []}, {"title": "Obsidian Life OS \u2014 Review new two-mode system", "body": []}, {"title": "Reponsai AI Avatar Video Pipeline \u2014 Digital Brand", "body": []}, {"title": "Swing-Trade Level Watch \u2014 long-only alerts", "body": []}, {"title": "Robotics Mastery \u2014 Custom Curated Learning Portal (end-to-end)", "body": []}, {"title": "Cursor subscription \u2014 use before it expires (~Oct 2026)", "body": []}, {"title": "Tailscale + tmux \u2014 remote agent access", "body": []}, {"title": "Cheap Home Remote Robot (open-source)", "body": []}, {"title": "DJI Mini \u2014 Remote Control over Internet", "body": []}]}, "ideas": {"Business & Projects": ["Hermes agent setup service for Professionals. Workshop with intro, initial setup, LLM provider, agent email, VPS/Local PC...", "HermesAgent: look regularly on products in marketplace that i'm interested in.", "https://activationia.crim.ca/details/", "Learn Local or Private AI (for usage with regulated industries like immigration consulting).", "Summarize what I got from Slimane B and Brahim Blidi.", "Team up with a real estate agent to build an AI training program.", "Make the agent automatically take the ideas from my Keep into Obsedian.", "OpenClaw for Realtors. (send a free pdf guide/form to identify need)", "An automatic agentic pipeline that would take an idea, research, design it, get human approval, implementation plan, and implement it.", "Ask Claude for the most addictive YouTube Faceless channel video if some one sees the title and thumbnail there is no way he want watch and when he watches no way won\u2019t finish", "Automate finding/building websites for new businesses", "Universal read-later solution (reddit, linkedin, x...).", "Explore and test ai workshops for 40+ or specific niche", "Consider a Phd in MILA (without leaving Augmenta)", "How can I get as much and as detailed insight as possible about how a certain industry operates or a specific professional/role? (pay them, free service...)", "Bot that appears in any marketplace (Amazon, Shopify, marketplace\u2026) that gives instant feedback about a product, like asking for its price on other platforms.", "Consider robotics/industrial AEC to work directly on industrial robots.", "Offer to be the personal AI coach for professionals hourly or monthly billed, I can help on any automation or app.", "AI/Optimization software to generate multiple designs each optimized for something.", "Canada immigration niche app, what are the main problems bugging both applicants and consultants. How can AI help consultatns get much more people and make more money.", "Service based business leveraging AI (drone, cleaning, rental for events \u2026); Look for the YC video on this topic  'watch later' youtube.", "Test spare parts on demand service (landing page + facebook)", "Training for professional and businesses \"Build Your Own Apps and Solutions\"", "GrowthMentor for Algerian students and professionals", "Where do I satart to work on shit like this https://x.com/sz_mediagroup/status/2047234212609376667?s=20  how would i even know if it's needed here and what current solutions are used or this https://www.medra.ai/about....How was this started https://scribe.milya.ca/en (simple shit); or Solar Panels Installation (real company look it up)", "Drone flexible panel marketing", "Master all AI-Agents: Claude Co-Work, Copilot, OpenClaw, OpenClaw ReadyToGo solutions...package it and sell it to specific niches", "Consider drone and robotic inspection business.", "How many words needed to write a guide book for students", "Change cover on X and rebrand as Full-Stack Engineer (images of me doing all bunch of engineering)", "Take some tech startups/companies that I admire (those of Cybernetix or https://eclipse.capital/) and ask AI how could I start one like that in details.", "Is having an Inc. before revenue, still be beneficial? consider putting budget app under an inc. Like hiring interns?", "Cheap good programmable drone", "Turn Kindle notes into consumable for ai agents", "Complete the MicroSaaS course  https://solosaasacademy.onlinecoursehost.com/courses/", "AI software to help reduce engineering to manufacturing errors.", "AI for engineering firms, helps them deliver projects at higher speed.", "YT Channel: Uncomfortable Things - Creepy Products", "AI-Generated commentary based on current commentators/training required?", "Robots rental for events and influencers (dog bot, humanoid...)", "vl53l9cx.pdf tiny lidar", "Post about my van rental on Kijiji and Facebook.", "YouTube: altered scenes from movies, what should have happened, different scenarios..", "Ebay-Amazon arbitrage", "Events rental stuff.", "Manus-Claude messaging", "App building for business leaders and professionals", "RapidApps for businesses, done in 2 weeks max.", "Capture real estate and home service leads from Reddit postres and comment", "Electronics and PCB componenets from Shenzhen for eCom", "Mrex course", "Build personal ai-agents for rich people.", "What side businesses can I run after work for 2hrs.", "Plan an eCommerce business: product, platform, test, marketing...", "Explore self-hosted server for photos syncing and other stuff", "Test backpack/car led/drone advertising (landing page + facebook)", "Other rent based business ideas (inflatable booth, playground....)", "Design Landing page/Facebook Page/Kijiji for Spare Parts Design", "How to move fast with product development, Ex: Retractable car cover!", "What AI apps/services I can provide for local SMBs?", "Find a tool that tracks time to rent per property type in Montreal/Laval.", "Checkout Jason Zhou video of UI with Claude workflow", "Filter the busniess ideas in Notion", "Top cards American Express Cobalt-Chexy-Aeroplan-CT World Elite", "Fleet management", "Better structure the business ideas sheet", "Subscribe to StarterStories", "Woodworking makerspaces", "Examine STEM business, how can I replicate existing established franchise like iCode? (grok/)", "Run a deep comparison of Duplex vs. Triplex vs. Fourplex vs. Condo, including renovation, creating value, paying renters to move.", "Student consultation business", "skywash.ca franchise entrepriseavendre"], "YouTube Faceless": ["Immigrants stories true and made up"]}, "errands": {"Grocery | Shopping | Things To Buy": ["Closest hinges for Guerrara", "Mechanical keyboard", "48 Laws of power", "Powerful mac or laptop with shared memory, or tower", "Frames for the house", "Library shelve for my desk.", "Bread", "Khel", "Obergine", "Sel", "Warehouse Child Unique | 180 Mnt Masson, Mascouche, QC J7K 3B5", "B\u00e9b\u00e9 D\u00e9p\u00f4t | 6105 Bd M\u00e9tropolitain E, Saint-L\u00e9onard", "B\u00e9b\u00e9rama | 155 Rue Notre-Dame local 56A, Repentigny", "Old Navy Gallerie d'Anjou", "Children Palace Place Versailles", "Bouquet de fleur Hana", "Toys for kids", "Zitoun de salade", "2 citrons", "Ma3adnous", "Carrots", "Tomatoes", "Torchi", "Courgette", "Cr\u00e8me cuisson", "Onion", "Thom", "Tomatoes concentrated", "Loubya", "Pomme de terre", "Hchih chorba", "\ud83d\udfe1 Pharmaprix\ud83d\udfe1", "Razors", "Vinegar", "Bathing soap", "\ud83d\udfe1 Bakar \ud83d\udfe1", "Chicken", "Olive oil", "3dass", "Ma9aron", "Spagiti", "Ziton", "Chapelure", "Vanila", "Thoum", "Honey \ud83c\udf6f", "Tea2", "Sabon 9alb", "Sugar", "\u062d\u0634\u064a\u0634 \u0634\u0631\u0628\u0629", "Jus", "\u0642\u0631\u0646\u0648\u0646", "La levure chimique", "Javel", "Pilon de poulet", "Smen costco", "Fish", "\ud83d\udd35 Costco \ud83d\udd35", "Car and van oil", "Banana", "Machto", "Tide savon", "9arnoun", "Jalbana", "Confiture", "Milk", "Cheese \ud83e\uddc0", "\u062d\u0645\u0635", "\ud83d\udfe2 Dollarama \ud83d\udfe2", "table Tafricha\u0668", "Rido bathroom", "Tapi bathrooms", "Aluminum cuisinier", "Chifoun", "\u062e\u0634\u062e\u0627\u0634", "les sachets", "\u0634\u0627\u0628\u0644\u0648\u063a", "\u0632\u0628\u064a\u0628", "Oil", "\u062f\u064a\u0648\u0644", "Les bo\u00eetes", "Kiwi", "Thon", "Fruit", "Danjel 3", "\u0641\u0644\u0641\u0644 \u0637\u0631\u0634\u064a", "Salad", "Thon 2 boites", "Butter", "Salt", "Milk \ud83e\udd5b", "Eggs", "Eggs \ud83e\udd5a", "Philadelphia cheese", "Butter \ud83e\uddc8", "Sucre", "Shredded cheese", "Gelbana", "Shoes", "Flip flops", "Sunscreen", "Juice", "Windshield washer fluid", "Deodorant", "Potatoes \ud83e\udd54", "Harissa", "Food mixer", "Magi-Prix", "Chap-lour", "Coffee", "Kemmoun", "Poivrons noire", "Dollarama", "Caf\u00e9", "Paper towels \ud83e\uddfb"], "House": ["Fix the TV or buy one.", "Fix the outdoor lamp.", "Buy high intensity daylight lamp for office", "Closet for my clothes.", "Add a shower head with a tube.", "Read syndicate rules", "Fix outdoor lamp", "Get the best TV streaming solution.", "Buy a bed frame and queen mattress", "Buy a BBQ charcoal/butan", "Follow-up about 20$ deposit refund.", "Mint big pot", "Mail box sensor.", "PC dock station.", "Double check about casier de arrangement."], "Personel & Admin": ["RDV dentist for me", "Hong Kong/Shenzhen Trip", "Update wallpaper with inpirting quotes (sama, startups...)", "Renew consular card + new for sabri", "Consolidate Notion Work and Personal into one.", "Buy glasses", "Find a rental garage for winter (contact the 1er rue lady)", "Complete 2026 budget", "Holidays: May 18; June 24; July 1; Must take 2.5 days before June 30", "Ask for refund for AWS related purchases: TUTORIALSDO + Udemy", "Light strip for kitchen", "Wash shoe", "Better format for tracking Goals", "Ask mecanic to change bolt for oil carter civic", "RDV for nails infection"], "Vacation/Outdoor": ["SEPAQ/ZEC reservation", "Crystal beach reservation", "Intermiel - Honey & Meadery", "Visa Europe for Chiksa", "https://www.genium360.ca/fr-ca/formations-et-activites/evenement-la-ronde-ete/", "https://www.tiktok.com/@intissar.channel/video/7626441341047885063", "Hammam ZinaBelle", "madeira portugal", "https://oasisdusahara.ca/", "https://www.facebook.com/share/p/14istwEugQB/?mibextid=wwXIfr", "Upper Canada Village"], "Iphone checklist": ["Check battery health", "Check for carrier lock: Settings > General > Carrier Lock", "Check parts and services", "iCloud lock, has to log out", "Serial number IMEI match the one on the box", "iunlocker.com"]}}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('DATA').textContent);
+const $ = id => document.getElementById(id);
+
+// nav
+document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', e => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  ['focus','tasks','ideas','errands'].forEach(v => $('view-'+v).classList.toggle('on', v === b.dataset.view));
+}));
+
+// helpers
+function bodyToLines(body){
+  if (Array.isArray(body)) return body.join('\n');
+  return body || '';
+}
+function makeItem(title, body, opts={}){
+  const el = document.createElement('div');
+  el.className = 'item' + (opts.open? ' open':'');
+  el.innerHTML = `<span class="dot ${opts.top?'top':''}"></span><span class="t">${esc(title)}</span>` +
+    (body && body.length ? `<div class="d">${esc(bodyToLines(body))}</div>` : '');
+  if (body && body.length) el.querySelector('.t').addEventListener('click', () => el.classList.toggle('open'));
+  return el;
+}
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function groupInto(root, groups){
+  Object.entries(groups).forEach(([sec, items])=>{
+    if(!items || !items.length) return;
+    const h=document.createElement('h2'); h.className='sec'; h.textContent=sec; root.appendChild(h);
+    items.forEach(it=>{
+      const title = typeof it === 'string' ? it : it.title;
+      const body  = typeof it === 'string' ? '' : (it.body||[]);
+      root.appendChild(makeItem(title, body));
+    });
+  });
+}
+
+// ---- FOCUS ----
+function renderFocus(){
+  const cards = $('focus-cards'); cards.innerHTML='';
+  // open tasks count
+  cards.appendChild(card('Open tasks', DATA.focus.tasks.length, 'b'));
+  // ROBOWALK card
+  const rw = DATA.projects.ROBOWALK;
+  const pct = rw.deposits.threshold ? Math.min(100, Math.round(rw.deposits.cumulative/rw.deposits.threshold*100)) : 0;
+  const el = document.createElement('div'); el.className='card';
+  el.innerHTML = `<h3>ROBOWALK MTL</h3>
+    <div class="big ${rw.deposits.buy_ready!=='false'&&pct>=100?'g':''}">$${rw.deposits.cumulative}</div>
+    <div class="faded">of $${rw.deposits.threshold} deposit goal · ${rw.leads_won} won / ${rw.leads_active} leads</div>
+    <div class="bar"><div style="width:${pct}%"></div></div>
+    <div class="faded" style="margin-top:6px;font-size:12px">${pct>=100?'✅ Buy the robot':'Cash-before: keep closing'}</div>`;
+  cards.appendChild(el);
+  // focus tasks
+  const rt=$('focus-tasks'); rt.innerHTML='';
+  const open = DATA.focus.tasks;
+  DATA.focus.top.forEach(t=>{
+    const match = open.find(o=>Object.keys(o)[0]===t);
+    if(match){ rt.appendChild(makeItem(t, match[t], {top:true})); const i=open.indexOf(match); if(i>-1) open.splice(i,1); }
+  });
+  open.forEach(o=>{ const t=Object.keys(o)[0]; rt.appendChild(makeItem(t, o[t])); });
+  if(!DATA.focus.tasks.length) rt.innerHTML='<div class="empty">Nothing open. Focus is clear. ✅</div>';
+}
+function card(title,val,cls){
+  const el=document.createElement('div'); el.className='card';
+  el.innerHTML=`<h3>${title}</h3><div class="big ${cls}">${val}</div>`; return el;
+}
+
+// ---- TASKS (skip done), IDEAS, ERRANDS ----
+function renderTasks(){ const r=$('tasks-root'); r.innerHTML=''; groupInto(r, DATA.all_tasks); if(!r.children.length) r.innerHTML='<div class="empty">All sections empty.</div>'; }
+function renderIdeas(){ const r=$('ideas-root'); r.innerHTML=''; groupInto(r, DATA.ideas); if(!r.children.length) r.innerHTML='<div class="empty">No ideas captured.</div>'; }
+function renderErrands(){ const r=$('errands-root'); r.innerHTML=''; groupInto(r, DATA.errands); if(!r.children.length) r.innerHTML='<div class="empty">No errands.</div>'; }
+
+document.getElementById('built').textContent = 'updated ' + DATA.built_at;
+renderFocus(); renderTasks(); renderIdeas(); renderErrands();
+</script>
+</body>
+</html>
